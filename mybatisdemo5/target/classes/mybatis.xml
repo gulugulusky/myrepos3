@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+  <configuration>
+    <!-- 加载属性文件，例如db.properties -->
+    <properties resource="db.properties"></properties>
+    <settings>
+	   <!--开启二级缓存-->
+	    <setting name="cacheEnabled" value="true"/>
+	</settings>
+    <typeAliases>
+  		<!-- 配置类型别名,方便配置映射时使用，如果没有配置别名，涉及到类时必须写全路径类名，如下配置项可以直接写类名 -->
+       <package name="com.zuikc.entity"/>
+       <package name="java.util"/>
+       <!-- 通过类型配置别名，需要配置多个，与以上配置只能出现一个方式，不能混用 -->
+     <!--   <typeAlias type="com.zuikc.entity.Dept" alias="Dept"/> -->
+    </typeAliases>
+   
+    <!-- 配置mybatis的环境 -->
+    <environments default="development">
+       <environment id="development">
+         <transactionManager type="JDBC"></transactionManager>
+         <!-- 配置数据源 -->
+         <dataSource type="POOLED">
+            <property name="driver" value="${driver}"/>
+            <property name="url" value="${url}"/>
+            <property name="username" value="${username}"/>
+            <property name="password" value="${password}"/>
+         </dataSource>
+       </environment>
+    </environments>
+    <!-- 添加映射文件 -->
+    <mappers>
+       <mapper resource="com/zuikc/mapper/DeptMapper.xml"/>
+       <mapper resource="com/zuikc/mapper/EmpMapper.xml"/>
+    </mappers>
+    
+    
+    
+    
+    
+    
+  </configuration>

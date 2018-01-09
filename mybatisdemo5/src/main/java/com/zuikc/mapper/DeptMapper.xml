@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <!-- namespace 称为名称空间，每一个映射文件的namespace的值应该具有唯一性，将于sql的id组合成唯一的statement -->
+ <mapper namespace="com.zuikc.dao.DeptMapper">
+     <!-- 一对多关联查询 -->
+     <select id="queryDeptAndEmp" resultMap="pmap1">
+       select d.deptno,d.dname,d.loc,e.empno,e.ename,e.job,e.mgr,e.hiredate,e.sal,e.comm
+       from dept d join emp e on d.deptno=e.deptno
+     </select>
+     
+     <resultMap type="Dept" id="pmap1" >
+       <id property="deptno" column="deptno"/>
+       <result property="dname" column="dname"/>
+       <result property="loc" column="loc"/>
+       <collection property="emps" column="empno" ofType="Emp">
+         <id property="empid" column="empno"/>
+         <result property="empname" column="ename"/>
+         <result property="empJob" column="job"/>
+         <result property="empMgr" column="mgr"/>
+         <result property="empHiredate" column="hiredate"/>
+         <result property="empSal" column="sal"/>
+         <result property="empComm" column="comm"/>
+       </collection>
+     
+     </resultMap>
+     
+     
+     
+    <!-- select标记用于定义查询 -->
+    <select id="queryDeptById" parameterType="int" resultType="Dept">
+       select * from dept where deptno=#{id}
+    </select>
+    <select id="queryAllDept" resultType="Dept" >
+      select * from dept
+    </select>
+    <insert id="saveDept" parameterType="Dept" >
+       insert into dept(dname,loc)values(#{dname},#{loc})
+    </insert>
+    <update id="updateDept" parameterType="Dept" >
+       update dept set dname=#{dname},loc=#{loc} where deptno=#{deptno}
+    </update>
+    <delete id="deleteDept" parameterType="int">
+       delete from dept where deptno=#{id}
+    </delete>
+ </mapper>

@@ -1,0 +1,82 @@
+一、MyBatis的动态SQL：
+
+1、动态查询处理：查询条件是动态组合。
+（1）if 标记
+    select * from emp where 1=1
+    <if test="ename!=null">
+      and ename=#{ename}
+    </test>
+    <if test="job!=null">
+      and job like #{job}
+    </test>
+    <if test="sal!=null">
+    <![CDATA[
+      and sal < #{sal}
+    ]]>
+    </test>
+ （2）choose    when   otherwise标记
+ （3）where标记：where标记可以根据实际情况可以去掉或者保留 and 或者 or 
+   <where>
+        <if test="ename!=null">
+           ename=#{ename}   
+        </if>
+        <if test="job!=null">
+          and job=#{job}
+        </if>
+      </where>  
+（4）trim标记：
+   <trim prefix="WHERE" prefixOverrides="AND |OR " >
+  ... 
+   </trim>
+   
+2、update语句中使用动态sql:
+ <update id="updateEmp" parameterType="Emp">
+       update emp 
+       <trim prefix="set" prefixOverrides=",">
+       	 <if test="ename!=null">
+	       	 ename=#{ename}
+	       </if>
+	       <if test="job!=null">
+	       	,job=#{job}
+	       </if>
+	       <if test="mgr!=null">
+	       	 ,mgr=#{mgr}
+	       </if>
+	       <if test="hiredate!=null">
+	       	,hiredate=#{hiredate}
+	       </if>
+	       <if test="sal!=null">
+	        ,sal=#{sal}
+	       </if>
+	       <if test="comm!=null">
+	         ,comm=#{comm}
+	       </if>
+       </trim>
+      
+       where empno=#{empno}
+    
+    </update>
+ 
+3、forEach:遍历集合构建 条件 in的列表  
+ 
+   查询1,2,3员工信息
+    <select id="queryEmpByDeptno" resultType="Emp">
+      select * from emp where deptno in
+      <foreach collection="list" item="deptno" index="index" open="(" separator="," close=")">
+        #{deptno}
+      </foreach>
+    </select>
+
+二、Mybatis缓存：
+1、缓存的概念：用于缓存数据的存储空间，当查询数据时可以查询缓存而不必查询数据库以提高性能。Mybatis缓存分为一级缓存和二级缓存，默认
+  使用一级缓存，二级缓存如要要使用需要开启，默认情况下不使用二级缓存。
+2、一级缓存：基于Session级别的缓存，在一个事务内可以使用缓存数据。
+3、二级缓存：基于SqlSessionFactory级别的缓存，每个应用有一个sessionFatory级别的缓存
+
+
+
+
+
+
+
+

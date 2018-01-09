@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <!-- namespace 称为名称空间，每一个映射文件的namespace的值应该具有唯一性，将于sql的id组合成唯一的statement -->
+ <mapper namespace="com.zuikc.dao.EmpMapper">
+     <cache></cache>
+   
+    <select id="queryEmpByCondition" parameterType="Emp" resultType="Emp">
+      select * from emp where COMM>100
+     <!--  <if test="ename!=null">
+        and ename=#{ename}
+      </if> -->
+      <if test="ename!=null">
+          and ename like #{ename}
+      </if>
+      <if test="job!=null">
+        and job=#{job}
+      </if>
+     <!--  <if test="sal!=null">
+          and sal&lt;#{sal}
+      </if> -->
+      <if test="sal!=null">
+          <![CDATA[
+          and sal<#{sal}
+          ]]>
+      </if>
+    </select>
+    <select id="queryEmpByCondition1" parameterType="Emp" resultType="Emp">
+      select * from emp 
+      <where>
+        <if test="ename!=null">
+           ename=#{ename}   
+        </if>
+        <if test="job!=null">
+          and job=#{job}
+        </if>
+      </where>
+    </select>
+    <select id="queryEmpByCondition2" parameterType="Emp" resultType="Emp">
+      select * from emp 
+       <trim prefix="where" suffixOverrides="and|or">
+         <if test="ename!=null">
+           ename=#{ename} and 
+        </if>
+        <if test="job!=null">
+          job=#{job}
+        </if>
+       </trim>
+    </select>
+<!--     <select id="queryEmpByCWO">
+      select * from emp where 1=1
+      <choose>
+         <when test=""></when>
+         <when test=""></when>
+         <when test=""></when>
+         <when test=""></when>
+         <otherwise>
+         
+         </otherwise>
+      </choose>
+    </select> -->
+    
+    <select id="queryEmpByDeptno" resultType="Emp">
+      select * from emp where deptno in
+      <foreach collection="list" item="deptno" index="index" open="(" separator="," close=")">
+        #{deptno}
+      </foreach>
+    
+    </select>
+  
+    <insert id="saveEmp" parameterType="Emp">
+      insert into emp(ename,job,mgr,hiredate,sal,comm,deptno)
+      values(#{ename},#{job},#{mgr},#{hiredate},#{sal},#{comm},#{deptno})
+    </insert>
+   <!--  <update id="updateEmp" parameterType="Emp">
+       update emp set ename=#{ename},job=#{job},mgr=#{mgr},
+       hiredate=#{hiredate},sal=#{sal},comm=#{comm}
+       where empno=#{empno}
+    
+    </update> -->
+    
+      <update id="updateEmp" parameterType="Emp">
+       update emp 
+       <trim prefix="set" prefixOverrides=",">
+       	 <if test="ename!=null">
+	       	 ename=#{ename}
+	       </if>
+	       <if test="job!=null">
+	       	,job=#{job}
+	       </if>
+	       <if test="mgr!=null">
+	       	 ,mgr=#{mgr}
+	       </if>
+	       <if test="hiredate!=null">
+	       	,hiredate=#{hiredate}
+	       </if>
+	       <if test="sal!=null">
+	        ,sal=#{sal}
+	       </if>
+	       <if test="comm!=null">
+	         ,comm=#{comm}
+	       </if>
+       </trim>
+      
+       where empno=#{empno}
+    
+    </update>
+    <select id="queryEmpById" parameterType="int" resultType="Emp">
+       select * from emp where empno=#{id}
+    </select>
+    <select id="queryAll" resultType="Emp" useCache="true" flushCache="false">
+       select * from emp
+    </select>
+ </mapper>
+ 
